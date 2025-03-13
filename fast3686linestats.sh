@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# Parse cmdline options
+###
+#
+# fast3686linestats.sh by Antti Kultanen <pyksy at pyksy dot fi>
+#
+# License: WTFPL
 #
 
 function show_help() {
@@ -10,6 +14,9 @@ function show_help() {
 	echo "  -i   Post modem line stats to InfluxDB"
 	echo "  -p   Pretty print modem line stats in human readable form"
 }
+
+# Parse cmdline options
+#
 
 if [ -z "${1}" ] 
 then
