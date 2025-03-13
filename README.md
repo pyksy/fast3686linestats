@@ -1,5 +1,5 @@
 # FAST3686 Line Stats
-Script to scrape line power and SnR stats from a Sagemcom FAST3686 cable modem and output then in human readable or CSV format, or post the values to an InfluxDB database.
+Script to scrape line power and SnR stats from a Sagemcom FAST3686 cable modem and output them in human readable or CSV format, or post the values to an InfluxDB database.
 
 # Setup
 Copy the dotfile to ~/.fast3686linestats.conf and edit the cable modem and (if needed) InfluxDB credentials, or export the required variables from your shell.
