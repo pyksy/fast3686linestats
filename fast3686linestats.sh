@@ -93,7 +93,6 @@ fi
 #
 
 LOGINHTML="$(curl -s "${FAST3686_URL}"/)"
-TEMPFILE="$(mktemp "/tmp/rgConnect_stat_XXXXXXXX.txt")"
 
 KEY="$(grep 'var SessionKey' <<<"${LOGINHTML}")"
 KEY="${KEY//[!0-9]/}"
@@ -106,13 +105,13 @@ LOGINURL="${FAST3686_URL}/goform/login?sessionKey=${KEY}"
 LOGINDATA="loginOrInitDS=${INITDS}&loginUsername=${ADMUSR}&loginPassword=${FAST3686_PASSWORD}&currentDsFrequency=${DSFREQ}&currentUSChannelID=${USCHAN}"
 
 SESSIONCOOKIE=$(curl -X POST -s -D - -o /dev/null -d "${LOGINDATA}" "${LOGINURL}" | grep Set-Cookie | cut -b 13-55)
-curl -s --cookie "${SESSIONCOOKIE}" "${FAST3686_URL}/RgConnect.asp" \
-	| sed -e 's/<[^>]*>/ /g' >"${TEMPFILE}"
+CONNHTML="$(curl -s --cookie "${SESSIONCOOKIE}" "${FAST3686_URL}/RgConnect.asp" \
+	| sed -e 's/<[^>]*>/ /g')"
 
 # Parse data to variables
 #
 
-IFS=$'\n' read -d '' -r -a DOWNSTREAM_DATA <<<"$(grep QAM256 "${TEMPFILE}" \
+IFS=$'\n' read -d '' -r -a DOWNSTREAM_DATA <<<"$(grep QAM256 <<<"${CONNHTML}" \
 	| awk '{printf("%s %s %s\n", $4, $7, $9);}')"
 for ((i=0; i<${#DOWNSTREAM_DATA[@]}; i++))
 do
@@ -125,7 +124,7 @@ do
 	DOWNSTREAM_CSV_DATA="${DOWNSTREAM_CSV_DATA}${CSV_LINE}"
 done
 
-IFS=$'\n' read -d '' -r -a UPSTREAM_DATA <<<"$(grep ATDMA "${TEMPFILE}" \
+IFS=$'\n' read -d '' -r -a UPSTREAM_DATA <<<"$(grep ATDMA <<<"${CONNHTML}" \
 	| awk '{printf("%s %s\n", $4, $9);}' \
 	| sed 's/^\(.\) /0\1 /g')"
 for ((i=0; i<${#UPSTREAM_DATA[@]}; i++))
@@ -166,8 +165,3 @@ then
 		--header "Authorization: Token ${INFLUX_TOKEN}" \
 		--data-raw "${UPSTREAM_POST_DATA}"
 fi
-
-# Cleanup
-#
-
-rm "${TEMPFILE}"
