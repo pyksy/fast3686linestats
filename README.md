@@ -7,16 +7,16 @@ Copy the dotfile to ~/.fast3686linestats.conf and edit the cable modem and (if n
 # Usage
 ```
 % bash fast3686linestats.sh -h
-Usage: fast3686linestats.sh [-c] [-h] [-i] [-o]
+Usage: fast3686linestats.sh [-c] [-h] [-i] [-p]
   -c   Output modem line stats in CSV format
   -h   Print this help
   -i   Post modem line stats to InfluxDB
-  -o   Output modem line stats in human readable form
+  -p   Pretty print modem line stats in human readable form
 ```
 
 # Example
 ```
-% bash fast3686linestats.sh -o
+% bash fast3686linestats.sh -p
 DOWNSTREAM
 Ch  Power     SNR
 01  3.7 dBmV  42.0 dB

@@ -4,29 +4,34 @@
 #
 
 function show_help() {
-	echo "Usage: $(basename "${0}") [-c] [-h] [-i] [-o]" >&2
-	echo "  -c   Output modem line stats in CSV format" >&2
-	echo "  -h   Print this help" >&2
-	echo "  -i   Post modem line stats to InfluxDB" >&2
-	echo "  -o   Output modem line stats in human readable form" >&2
+	echo "Usage: $(basename "${0}") [-c] [-h] [-i] [-p]"
+	echo "  -c   Output modem line stats in CSV format"
+	echo "  -h   Print this help and exit"
+	echo "  -i   Post modem line stats to InfluxDB"
+	echo "  -p   Pretty print modem line stats in human readable form"
 }
 
-[ -z "${1}" ] && show_help && exit 1
+if [ -z "${1}" ] 
+then
+	echo "Error: Nothing to do" >&2
+	show_help >&2
+	exit 1
+fi
 
-while getopts "chio" OPT
+while getopts "chip" OPT
 do
 	case "${OPT}" in
 	c)
 		PRINT_CSV=1
 		;;
 	h)
-		show_help >&2
+		show_help
 		exit 0
 		;;
 	i)
 		POST_INFLUX=1
 		;;
-	o)
+	p)
 		PRINT_STDOUT=1
 		;;
 	*)
