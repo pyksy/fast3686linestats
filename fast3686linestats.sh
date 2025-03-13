@@ -92,7 +92,7 @@ fi
 # Scrape data from modem
 #
 
-LOGINHTML="$(curl -s ${FAST3686_URL}/)"
+LOGINHTML="$(curl -s "${FAST3686_URL}"/)"
 TEMPFILE="$(mktemp "/tmp/rgConnect_stat_XXXXXXXX.txt")"
 
 KEY="$(grep 'var SessionKey' <<<"${LOGINHTML}")"
@@ -106,17 +106,17 @@ LOGINURL="${FAST3686_URL}/goform/login?sessionKey=${KEY}"
 LOGINDATA="loginOrInitDS=${INITDS}&loginUsername=${ADMUSR}&loginPassword=${FAST3686_PASSWORD}&currentDsFrequency=${DSFREQ}&currentUSChannelID=${USCHAN}"
 
 SESSIONCOOKIE=$(curl -X POST -s -D - -o /dev/null -d "${LOGINDATA}" "${LOGINURL}" | grep Set-Cookie | cut -b 13-55)
-curl -s --cookie "${SESSIONCOOKIE}" ${FAST3686_URL}/RgConnect.asp \
+curl -s --cookie "${SESSIONCOOKIE}" "${FAST3686_URL}/RgConnect.asp" \
 	| sed -e 's/<[^>]*>/ /g' >"${TEMPFILE}"
 
 # Parse data to variables
 #
 
-IFS=$'\n' read -d '' -r -a DOWNSTREAM_DATA <<<$(grep QAM256 "${TEMPFILE}" \
-	| awk '{printf("%s %s %s\n", $4, $7, $9);}')
+IFS=$'\n' read -d '' -r -a DOWNSTREAM_DATA <<<"$(grep QAM256 "${TEMPFILE}" \
+	| awk '{printf("%s %s %s\n", $4, $7, $9);}')"
 for ((i=0; i<${#DOWNSTREAM_DATA[@]}; i++))
 do
-	read CHANNEL POWER SNR <<<${DOWNSTREAM_DATA[${i}]}
+	read -r CHANNEL POWER SNR <<<"${DOWNSTREAM_DATA[${i}]}"
 	DOWNSTREAM_POST_DATA="${DOWNSTREAM_POST_DATA}snr,channel=${CHANNEL} value=${SNR}"$'\n'
 	DOWNSTREAM_POST_DATA="${DOWNSTREAM_POST_DATA}power,channel=${CHANNEL} value=${POWER}"$'\n'
 	printf -v OUTPUT_LINE "%02d  %.1f dBmV  %.1f dB\n" "${CHANNEL}" "${POWER}" "${SNR}"
@@ -125,12 +125,12 @@ do
 	DOWNSTREAM_CSV_DATA="${DOWNSTREAM_CSV_DATA}${CSV_LINE}"
 done
 
-IFS=$'\n' read -d '' -r -a UPSTREAM_DATA <<<$(grep ATDMA "${TEMPFILE}" \
+IFS=$'\n' read -d '' -r -a UPSTREAM_DATA <<<"$(grep ATDMA "${TEMPFILE}" \
 	| awk '{printf("%s %s\n", $4, $9);}' \
-	| sed 's/^\(.\) /0\1 /g')
+	| sed 's/^\(.\) /0\1 /g')"
 for ((i=0; i<${#UPSTREAM_DATA[@]}; i++))
 do
-	read CHANNEL POWER <<<${UPSTREAM_DATA[${i}]}
+	read -r CHANNEL POWER <<<"${UPSTREAM_DATA[${i}]}"
 	UPSTREAM_POST_DATA="${UPSTREAM_POST_DATA}power,channel=${CHANNEL} value=${POWER}"$'\n'
 	printf -v OUTPUT_LINE "%02d  %.1f dBmV\n" "${CHANNEL}" "${POWER}"
 	UPSTREAM_PRINT_DATA="${UPSTREAM_PRINT_DATA}${OUTPUT_LINE}"
