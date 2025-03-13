@@ -1,8 +1,8 @@
-# FAST3686 Line Stats
-Script to scrape line power and SNR stats from a Sagemcom FAST3686 cable modem and output them in human readable or CSV format, or post the values to an InfluxDB database.
+# Sagemcom FAST3686 Line Stats
+Scrape the per-channel power and Signal-to-Noise Ratio stats from a Sagemcom FAST3686 cable modem and output them in human readable or CSV format, or post the values to an InfluxDB database.
 
 # Setup
-Copy the dotfile to ~/.fast3686linestats.conf and edit the cable modem and (if needed) InfluxDB credentials, or export the required variables from your shell.
+Copy the dotfile to ~/.fast3686linestats.conf and edit the cable modem and (if needed) InfluxDB credentials there, or export the variables from your shell.
 
 # Usage
 ```
@@ -49,3 +49,11 @@ Ch  Power
 05  50.1 dBmV
 
 ```
+
+# FAQ
+- Q: Does it work with other Sagemcom cable modems?
+- A: I don't know, I only have a FAST3686 sold by my ISP.
+
+<!-- -->
+- Q: It doesn't work?!
+- A: It Works On My Machine (tm)
