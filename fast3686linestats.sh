@@ -51,6 +51,8 @@ done
 #
 
 [ -e "${HOME}/.fast3686linestats.conf" ] && source "${HOME}/.fast3686linestats.conf"
+[[ "${FAST3686_URL}" == */ ]] && FAST3686_URL="${FAST3686_URL::-1}"
+[[ "${INFLUX_URL}" == */ ]] && INFLUX_URL="${INFLUX_URL::-1}"
 
 if [ -z "${FAST3686_URL}" ] \
 	|| [ -z "${FAST3686_PASSWORD}" ]
